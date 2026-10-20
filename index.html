@@ -40,44 +40,70 @@ a{color:inherit}.wrap{width:min(1120px,92%);margin:auto}.top{display:flex;align-
 <p class="privacy">Se il modulo non viene visualizzato, <a href="https://docs.google.com/forms/d/e/1FAIpQLSdaRf-TVXCnUXvW5TJuF7pCI2ZZD2URvVspnF_kqqM3qIpEWA/viewform" target="_blank" rel="noopener noreferrer">aprilo direttamente qui</a>.</p>
 </section>
 </main><footer class="footer"><p class="script">See you on the dance floor!</p><p>GALLO 50 · 15.11.2026</p><p class="small">Una festa, mille ricordi.</p></footer>
-  
-<!-- Musica di sottofondo: Corona - The Rhythm of the Night -->
-<div id="music-background" style="position:fixed; width:1px; height:1px; overflow:hidden; left:-10px; top:0;">
-  <iframe
-    id="music-player"
-    width="1"
-    height="1"
-    src="https://www.youtube.com/embed/OnT58cIJSpw?autoplay=1&loop=1&playlist=OnT58cIJSpw&playsinline=1"
-    title="Corona - The Rhythm of the Night"
-    allow="autoplay; encrypted-media"
-    referrerpolicy="strict-origin-when-cross-origin">
-  </iframe>
+<!-- Corona - The Rhythm of the Night: musica di sottofondo -->
+<div style="position:fixed; width:1px; height:1px; overflow:hidden; left:-10px; top:0;">
+  <div id="music-player"></div>
 </div>
-
-<!-- Pulsante alternativo se l'autoplay viene bloccato -->
-<button id="start-music"
+<button id="music-toggle"
+  type="button"
+  aria-label="Riproduci musica"
   style="position:fixed; bottom:20px; right:20px; z-index:9999;
          padding:12px 18px; border:2px solid #ffd700;
          border-radius:30px; background:#241044; color:#fff;
-         font-size:15px; cursor:pointer;">
-  🎵 Attiva la musica
+         font-size:15px; cursor:pointer;
+         box-shadow:0 0 15px #ff00cc;">
+  ▶️ Play musica
 </button>
-
+<script src="https://www.youtube.com/iframe_api"></script>
 <script>
-  const musicFrame = document.getElementById("music-player");
-  const musicButton = document.getElementById("start-music");
+  let musicPlayer;
+  let playerReady = false;
+  let isPlaying = false;
 
-  musicButton.addEventListener("click", function () {
-    musicFrame.contentWindow.postMessage(
-      JSON.stringify({
-        event: "command",
-        func: "playVideo",
-        args: []
-      }),
-      "https://www.youtube.com"
-    );
+  const musicButton = document.getElementById("music-toggle");
 
-    musicButton.textContent = "🎶 Musica avviata";
+  function onYouTubeIframeAPIReady() {
+    musicPlayer = new YT.Player("music-player", {
+      width: "1",
+      height: "1",
+      videoId: "OnT58cIJSpw",
+      playerVars: {
+        autoplay: 1,
+        loop: 1,
+        playlist: "OnT58cIJSpw",
+        playsinline: 1
+      },
+      events: {
+        onReady: function(event) {
+          playerReady = true;
+          event.target.playVideo();
+        },
+        onStateChange: function(event) {
+          if (event.data === YT.PlayerState.PLAYING) {
+            isPlaying = true;
+            musicButton.textContent = "⏸ Pausa musica";
+            musicButton.setAttribute("aria-label", "Metti in pausa la musica");
+          } else if (
+            event.data === YT.PlayerState.PAUSED ||
+            event.data === YT.PlayerState.ENDED
+          ) {
+            isPlaying = false;
+            musicButton.textContent = "▶️ Play musica";
+            musicButton.setAttribute("aria-label", "Riproduci musica");
+          }
+        }
+      }
+    });
+  }
+
+  musicButton.addEventListener("click", function() {
+    if (!playerReady || !musicPlayer) return;
+
+    if (isPlaying) {
+      musicPlayer.pauseVideo();
+    } else {
+      musicPlayer.playVideo();
+    }
   });
 </script>
 <script>
