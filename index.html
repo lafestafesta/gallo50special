@@ -40,6 +40,46 @@ a{color:inherit}.wrap{width:min(1120px,92%);margin:auto}.top{display:flex;align-
 <p class="privacy">Se il modulo non viene visualizzato, <a href="https://docs.google.com/forms/d/e/1FAIpQLSdaRf-TVXCnUXvW5TJuF7pCI2ZZD2URvVspnF_kqqM3qIpEWA/viewform" target="_blank" rel="noopener noreferrer">aprilo direttamente qui</a>.</p>
 </section>
 </main><footer class="footer"><p class="script">See you on the dance floor!</p><p>GALLO 50 · 15.11.2026</p><p class="small">Una festa, mille ricordi.</p></footer>
+  
+<!-- Musica di sottofondo: Corona - The Rhythm of the Night -->
+<div id="music-background" style="position:fixed; width:1px; height:1px; overflow:hidden; left:-10px; top:0;">
+  <iframe
+    id="music-player"
+    width="1"
+    height="1"
+    src="https://www.youtube.com/embed/OnT58cIJSpw?autoplay=1&loop=1&playlist=OnT58cIJSpw&playsinline=1"
+    title="Corona - The Rhythm of the Night"
+    allow="autoplay; encrypted-media"
+    referrerpolicy="strict-origin-when-cross-origin">
+  </iframe>
+</div>
+
+<!-- Pulsante alternativo se l'autoplay viene bloccato -->
+<button id="start-music"
+  style="position:fixed; bottom:20px; right:20px; z-index:9999;
+         padding:12px 18px; border:2px solid #ffd700;
+         border-radius:30px; background:#241044; color:#fff;
+         font-size:15px; cursor:pointer;">
+  🎵 Attiva la musica
+</button>
+
+<script>
+  const musicFrame = document.getElementById("music-player");
+  const musicButton = document.getElementById("start-music");
+
+  musicButton.addEventListener("click", function () {
+    musicFrame.contentWindow.postMessage(
+      JSON.stringify({
+        event: "command",
+        func: "playVideo",
+        args: []
+      }),
+      "https://www.youtube.com"
+    );
+
+    musicButton.textContent = "🎶 Musica avviata";
+  });
+</script>
 <script>
 const target = new Date('2026-11-15T18:00:00+01:00').getTime();
 function tick(){let diff=target-Date.now();if(diff<=0){['days','hours','mins','secs'].forEach(id=>document.getElementById(id).textContent='00');document.getElementById('count-label').textContent='È arrivato il momento di festeggiare!';return}
