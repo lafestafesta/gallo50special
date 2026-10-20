@@ -1,0 +1,33 @@
+
+name: Disattiva il sito di Gallo
+
+on:
+  schedule:
+    - cron: "59 23 1 11 *"
+      timezone: "Europe/Rome"
+
+permissions:
+  contents: read
+
+jobs:
+  unpublish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verifica data e ora
+        id: check
+        run: |
+          if [ "$(date -u +%Y)" = "2026" ] && \
+             [ "$(date -u +%s)" -ge \
+             "$(date -u -d '2026-11-01 22:59:00' +%s)" ]; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Rimuovi la pubblicazione di GitHub Pages
+        if: steps.check.outputs.ready == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.PAGES_ADMIN_TOKEN }}
+          REPO: ${{ github.repository }}
+        run: |
+          gh api --method DELETE "repos/$REPO/pages"
