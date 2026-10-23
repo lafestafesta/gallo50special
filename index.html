@@ -108,7 +108,7 @@ a{color:inherit}.wrap{width:min(1120px,92%);margin:auto}.top{display:flex;align-
   });
 </script>
 <script>
-const target = new Date('2026-11-15T18:00:00+01:00').getTime();
+const target = new Date('2026-11-15T18:00:00').getTime();
 function tick(){let diff=target-Date.now();if(diff<=0){['days','hours','mins','secs'].forEach(id=>document.getElementById(id).textContent='00');document.getElementById('count-label').textContent='È arrivato il momento di festeggiare!';return}
 const d=Math.floor(diff/86400000);diff%=86400000;const h=Math.floor(diff/3600000);diff%=3600000;const m=Math.floor(diff/60000);const s=Math.floor(diff%60000/1000);
 document.getElementById('days').textContent=String(d).padStart(2,'0');document.getElementById('hours').textContent=String(h).padStart(2,'0');document.getElementById('mins').textContent=String(m).padStart(2,'0');document.getElementById('secs').textContent=String(s).padStart(2,'0')}
